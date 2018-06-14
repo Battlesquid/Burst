@@ -18,7 +18,7 @@ function preload() {
 }
 
 function setup() {
-    var cnv = createCanvas(900, 600);
+    var cnv = createCanvas(window.innerWidth, window.innerHeight);
     cnv.mouseClicked(togglePlay);
     fft = new p5.FFT();
     peakDetect = new p5.PeakDetect();
