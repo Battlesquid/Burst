@@ -1,91 +1,102 @@
-var sound, font, spectrum, h;
-var colorArr = [],
-    group = [];
-var spr, spr2, stage, player, shockwave, h;
-var ang, flag = 2;
+var sound, sound2, sound3, sound4, sound5, sound6;
+var soundArr = [];
+var font, spectrum, h;
+var flag = 2,
+    changeBGFlag = false;
 
-var xAxisX, xAxisY;
-var steps;
 var peakDetect, amplitude, a;
 
 var soundDuration, plength = 0;
 var lastPercent;
-var beatArray = [];
 var obsRotation = 20;
 var burst;
 var toggle = true;
 var offset = 0;
 var p;
+var songIndex;
+var allObs;
+var polateColor = 21;
 
 function preload() {
     sound = loadSound('assets/loop.mp3');
+    sound2 = loadSound('assets/loop2.mp3');
+    sound3 = loadSound('assets/loop3.mp3');
+    sound4 = loadSound('assets/loop4.mp3');
+    sound5 = loadSound('assets/loop5.mp3');
+    sound6 = loadSound('assets/loop6.mp3');
+
     font = loadFont('assets/TheBoldFont.ttf');
 }
 
 function setup() {
     var cnv = createCanvas(window.innerWidth, window.innerHeight);
     cnv.mouseClicked(togglePlay);
+    soundArr = [sound, sound2, sound3, sound4, sound5, sound6];
+    songIndex = 0;
     fft = new p5.FFT();
     peakDetect = new p5.PeakDetect();
     amplitude = new p5.Amplitude();
-    song = new p5.SoundLoop(function () {
-        sound.play();
-    });
-    amplitude.setInput(sound);
-    sound.amp(0.5);
-    sound.setVolume(1);
+    amplitude.setInput(soundArr[songIndex]);
+    soundArr[songIndex].amp(0.5);
+    soundArr[songIndex].setVolume(1);
     textFont(font);
     textAlign(CENTER);
     h = 0;
     smooth();
     noCursor();
-    if (sound.isLoaded())
-        sound.play();
+    allObs = new Group();
     burst = new Group();
     playerInit();
+    if (soundArr[songIndex].isLoaded())
+        soundArr[songIndex].play();
 }
 
 function draw() {
     colorMode(HSB);
-    background(0, 0, 21);
+    background(0, 0, polateColor);
 
     spectrum = fft.analyze();
     updateAudioVisualizer();
-
+    // if (changeBGFlag) {
+    //     p.position.x = lerp(p.position.x, mouseX - width / 2, 0.05);
+    //     p.position.y = lerp(p.position.y, mouseY - height / 2, 0.05);
+    // }
     p.position.x = mouseX - width / 2;
     p.position.y = mouseY - height / 2;
 
     p.draw = function () {
+        noStroke();
         ellipse(0, 0, 50, 50);
     }
+    p.collide(allObs, hit);
     drawSprites();
 
     peakDetect.update(fft);
-    /* OVERLAY */
-
     camera.off();
     updateGameState();
     camera.on();
     push();
     translate(width / 2, height / 2);
-    fill(0, 0, 40, lerp(0, amplitude.getLevel(), 0.5));
+    fill(0, 0, 40, lerp(0, amplitude.getLevel(), 0.10));
     rectMode(CENTER);
     rect(0, 0, width, height);
     pop();
     if (peakDetect.isDetected) {
         releaseWaveObstacle();
     }
+    if (int(percent) == 3) {
+        changeBGFlag = true;
+    }
 }
 
 function updateGameState() {
-    if (sound.isPlaying()) {
-        soundDuration = sound.duration();
-        plength = map(sound.currentTime(), 0, soundDuration, 0, width);
+    if (soundArr[songIndex].isPlaying()) {
+        soundDuration = soundArr[songIndex].duration();
+        plength = map(soundArr[songIndex].currentTime(), 0, soundDuration, 0, width);
         noStroke();
         fill(0, 0, 94);
         rect(0, height - 20, plength, 20);
-
-        percent = map(sound.currentTime(), 0, soundDuration, 0, 100);
+        percent = map(soundArr[songIndex].currentTime(), 0, soundDuration, 0, 100);
         textSize(20);
         text(str(int(percent)) + "%", 30, height - 30);
     } else {
@@ -117,7 +128,7 @@ function releaseWaveObstacle() {
     toggle = !toggle;
     offset = 0;
     if (toggle) {
-        offset = 16;
+        offset = 18;
     } else {
         offset = 0;
     }
@@ -128,11 +139,24 @@ function releaseWaveObstacle() {
         s.rotation = sprRotation + offset;
         s.shapeColor = color(230);
         burst.add(s);
-        sprRotation += (36 - offset);
+        allObs.add(s);
+        sprRotation += 36;
     }
     for (var i = 0; i < burst.length; i++) {
-        burst.get(i).setSpeed(15, burst.get(i).rotation - offset);
+        burst.get(i).setSpeed(15, burst.get(i).rotation);
     }
+}
+
+function releaseWallObstacle() {
+    var dirArr = [0, 180];
+    var direction = int(random(0, 2));
+    var index = int(random(0, 1));
+    var s = createSprite(0 + (direction == 1 ? window.innerWidth : 0), 0, 10, 80);
+    s.life = 200;
+    s.shapeColor = color(230);
+    allObs.add(s);
+
+    s.setSpeed(20, dirArr[index]);
 }
 
 // function releaseQuakeObstacle(waves = 4) {
@@ -163,7 +187,8 @@ function updateAudioVisualizer() {
     }
     if (keyWentDown('3'))
         flag = 3;
-
+    push();
+    rotate(frameCount / 200);
     switch (flag) {
         case 1:
             push();
@@ -177,6 +202,7 @@ function updateAudioVisualizer() {
                 rect(x, y, 2, spectrum[i]);
                 rotate(TWO_PI / 360);
             }
+
             pop();
             break;
         case 2:
@@ -191,6 +217,7 @@ function updateAudioVisualizer() {
                 fill(200, 0, c);
                 rect(0, 0, 2, spectrum[i]);
             }
+
             pop();
             break;
         case 3:
@@ -208,6 +235,7 @@ function updateAudioVisualizer() {
         default:
             break;
     }
+    pop();
 
     push();
     colorMode(HSB);
@@ -215,76 +243,19 @@ function updateAudioVisualizer() {
     ellipse(0, 0, rad + 10, rad + 10);
     fill(250);
     ellipse(0, 0, rad, rad);
+    
     pop();
 }
-// function waveInterval() {
-//     setInterval(releaseWaveObstacle, 400);
-// }
-// setInterval(releaseWaveObstacle, (140/60) * 500);
-
-setInterval(releasePaceObstacle, (60 / 140) * 1000);
-
-
-// class Block {
-//     constructor(xp, yp, w, c, type) {
-//         this.xp = xp;
-//         this.yp = yp;
-//         this.w = w;
-//         this.c = c;
-//         this.type = type;
-//         (this.spr = createSprite(xp, yp, w, w)).setCollider('rectangle', 0, 0, w + 10, w + 10);
-//         this.spr.draw = function () {
-
-//             strokeJoin(ROUND);
-//             stroke(93, 98, 234);
-//             strokeWeight(20);
-//             fill(44);
-//             rect(0, 0, this.width, this.width);
-
-//             stroke(255);
-//             strokeWeight(20);
-//             fill(255);
-//             rect(0, 0, this.width - 10, this.width - 10);
-//         }
-//         this.spr.debug = true;
-//     }
-// }
-
-// class Spike {
-//     constructor(p1, p2, p3) {
-//         this.p1 = p1;
-//         this.p2 = p2;
-//         this.p3 = p3;
-
-//         triangle(p1, p2, p3);
-//     }
-// }
-
-// class playerSprite {
-//     constructor(xp, yp) {
-//         this.xp = xp;
-//         this.yp = yp;
-
-//         (this.pspr = createSprite(xp, yp, 50, 50)).setCollider('circle', mouseX, mouseY, 25);
-
-//         this.pspr.draw = function () {
-//             fill(44);
-//             ellipse(xp, yp, 50, 50);
-//         }
-//         this.pspr.debug = true;
-//     }
-// }
-// /* 45x15 */
-
-// class laserObj {
-//     constructor(y, type, duration) {
-//         this.y = y;
-//         this.type = type;
-//         this.duration = duration;
-
-
-//     }
-// }
+function releaseQuakeObstacle() {
+    for (var i = 0; i < 2; i++) {
+        setInterval(releaseWaveObstacle, 700);
+    }
+    clearInterval(releaseWaveObstacle);
+}
+function hit() {
+    p.shapeColor = color(0);
+}
+setInterval(releasePaceObstacle, (60 / 140 * 2) * 1000);
 
 function playerInit() {
     p = createSprite(0, 0, 50, 50);
