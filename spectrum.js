@@ -3,6 +3,7 @@ var soundArr = [];
 var font, spectrum, h;
 var flag = 2,
     changeBGFlag = false;
+var obHit;
 
 var peakDetect, amplitude, a;
 
@@ -16,6 +17,8 @@ var p;
 var songIndex;
 var allObs;
 var polateColor = 21;
+var percent = 0;
+var musicPoints = [];
 
 function preload() {
     sound = loadSound('assets/loop.mp3');
@@ -54,7 +57,7 @@ function setup() {
 function draw() {
     colorMode(HSB);
     background(0, 0, polateColor);
-
+    displayHUD();
     spectrum = fft.analyze();
     updateAudioVisualizer();
     // if (changeBGFlag) {
@@ -68,7 +71,7 @@ function draw() {
         noStroke();
         ellipse(0, 0, 50, 50);
     }
-    p.collide(allObs, hit);
+    p.overlap(burst, hit);
     drawSprites();
 
     peakDetect.update(fft);
@@ -84,8 +87,15 @@ function draw() {
     if (peakDetect.isDetected) {
         releaseWaveObstacle();
     }
-    if (int(percent) == 3) {
-        changeBGFlag = true;
+    // if (int(percent) == 3) {
+    //     fadeBgOut();
+    // }
+    if (obHit)
+        p.shapeColor = color(0, 64, 82);
+    sound.onended(fadeBgOut);
+    if(mouseWentDown(RIGHT)) {
+        musicPoints.push(soundArr[songIndex].currentTime());
+        console.log(musicPoints);
     }
 }
 
@@ -93,71 +103,28 @@ function updateGameState() {
     if (soundArr[songIndex].isPlaying()) {
         soundDuration = soundArr[songIndex].duration();
         plength = map(soundArr[songIndex].currentTime(), 0, soundDuration, 0, width);
-        noStroke();
-        fill(0, 0, 94);
-        rect(0, height - 20, plength, 20);
+        // noStroke();
+        // fill(0, 0, 94);
+        // rect(0, height - 20, plength, 20);
         percent = map(soundArr[songIndex].currentTime(), 0, soundDuration, 0, 100);
-        textSize(20);
-        text(str(int(percent)) + "%", 30, height - 30);
+        // textSize(20);
+        // text(str(int(percent)) + "%", 30, height - 30);
     } else {
-        textSize(20);
-        text(str(int(lastPercent)) + "%", 30, height - 30);
+        // textSize(20);
+        // text(str(int(lastPercent)) + "%", 30, height - 30);
     }
 }
 
 function togglePlay() {
     if (sound.isPlaying()) {
         var lastPercent = map(sound.currentTime(), 0, soundDuration, 0, 100);
-        sound.pause();
+        soundArr[songIndex].pause();
     } else {
-        sound.play();
+        soundArr[songIndex].play();
     }
 }
 
-function releasePaceObstacle() {
-    var s = createSprite(0, 0, 10, 10);
-    s.shapeColor = color(200);
-    s.maxSpeed = 20;
-    s.life = 100;
-    s.rotation = obsRotation;
-    s.setSpeed(20, obsRotation);
-    obsRotation += 20;
-}
 
-function releaseWaveObstacle() {
-    toggle = !toggle;
-    offset = 0;
-    if (toggle) {
-        offset = 18;
-    } else {
-        offset = 0;
-    }
-    var sprRotation = 0;
-    for (var i = 0; i < 10; i++) {
-        var s = createSprite(0, 0, 25, 25);
-        s.life = 500;
-        s.rotation = sprRotation + offset;
-        s.shapeColor = color(230);
-        burst.add(s);
-        allObs.add(s);
-        sprRotation += 36;
-    }
-    for (var i = 0; i < burst.length; i++) {
-        burst.get(i).setSpeed(15, burst.get(i).rotation);
-    }
-}
-
-function releaseWallObstacle() {
-    var dirArr = [0, 180];
-    var direction = int(random(0, 2));
-    var index = int(random(0, 1));
-    var s = createSprite(0 + (direction == 1 ? window.innerWidth : 0), 0, 10, 80);
-    s.life = 200;
-    s.shapeColor = color(230);
-    allObs.add(s);
-
-    s.setSpeed(20, dirArr[index]);
-}
 
 // function releaseQuakeObstacle(waves = 4) {
 //     for (var i = 0; i < waves; i++) {
@@ -243,23 +210,40 @@ function updateAudioVisualizer() {
     ellipse(0, 0, rad + 10, rad + 10);
     fill(250);
     ellipse(0, 0, rad, rad);
-    
+
     pop();
 }
-function releaseQuakeObstacle() {
-    for (var i = 0; i < 2; i++) {
-        setInterval(releaseWaveObstacle, 700);
-    }
-    clearInterval(releaseWaveObstacle);
-}
+
+
 function hit() {
-    p.shapeColor = color(0);
+    obHit = true;
 }
-setInterval(releasePaceObstacle, (60 / 140 * 2) * 1000);
+setInterval(releasePaceObstacle, (60 / 140) * 1000);
+
 
 function playerInit() {
     p = createSprite(0, 0, 50, 50);
     p.setCollider('circle', 0, 0, 25);
-    p.debug = true;
     p.shapeColor = color(230);
+}
+
+function displayHUD() {
+    push();
+    push();
+    colorMode(HSB);
+    translate(width / 2, height / 2);
+    noFill();
+    stroke(0, 0, 84, 0.5);
+    arc(0, 0, fft.getEnergy('bass') * 2, fft.getEnergy('bass') * 2, 0, map(soundArr[songIndex].currentTime(), 0, soundDuration, 0, TWO_PI));
+    pop();
+
+
+    pop();
+}
+
+function fadeBgOut() {
+    push();
+    colorMode(RGB);
+    polateColor -= 1 * (polateColor > 0 ? 1 : 0);
+    pop();
 }
