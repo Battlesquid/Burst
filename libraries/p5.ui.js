@@ -45,5 +45,3 @@ p5.prototype.drawShapes = function () {
         }
     }
 }
-
-p5.prototype.
