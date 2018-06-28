@@ -1,7 +1,40 @@
 var sound, sound2, sound3, sound4, sound5, sound6;
 var font, mgr;
 var soundArr = [];
-
+var menuloop;
+var songs = {
+    0: {
+        title: "Hollah!",
+        artist: "Disfigure",
+        difficulty: "Beginner"
+    },
+    1: {
+        title: "Nirmiti",
+        artist: "Xtrullor",
+        difficulty: "Beginner"
+    },
+    2: {
+        title: "One!",
+        artist: "HOVERBOOTS",
+        difficulty: "Normal"
+    },
+    3: {
+        title: "Time Leaper",
+        artist: "Hinkik",
+        difficulty: "Normal"
+    },
+    4: {
+        title: "Pill",
+        artist: "Heuse and Zeus X Crona (feat. Emma Sameth) ",
+        difficulty: "Advanced"
+    },
+    5: {
+        title: "Hollah!",
+        artist: "Disfigure",
+        difficulty: "Advanced"
+    },
+};
+var version = "1.0";
 function preload() {
     sound = loadSound('assets/loop.mp3');
     sound2 = loadSound('assets/loop2.mp3');
@@ -9,6 +42,7 @@ function preload() {
     sound4 = loadSound('assets/loop4.mp3');
     sound5 = loadSound('assets/loop5.mp3');
     sound6 = loadSound('assets/loop6.mp3');
+    menuloop = loadSound('assets/menuloop.mp3');
 
     font = loadFont('assets/TheBoldFont.ttf');
 }
@@ -23,8 +57,12 @@ function setup() {
     mgr.sound4 = sound4;
     mgr.sound5 = sound5;
     mgr.sound6 = sound6;
+    mgr.menuloop = menuloop;
     mgr.font = font;
     mgr.soundArr = soundArr;
+    mgr.songs = songs;
+    mgr.version = version;
+
     mgr.wire();
     mgr.showScene(MainMenu);
 }

@@ -1,7 +1,7 @@
 var allButtons = [];
 
-p5.prototype.createUIButton = function (x, y, d, label, displayStatus, callback) {
-    var b = new Button(x, y, d, label, displayStatus, callback);
+p5.prototype.createUIButton = function (rx, ry, w, h, label, displayStatus, callback) {
+    var b = new Button(rx, ry, w, h, label, displayStatus, callback);
 }
 
 
@@ -14,28 +14,52 @@ p5.prototype.renderUI = function (bool) {
                 colorMode(RGB);
                 noFill();
                 stroke(240);
-                ellipse(allButtons[i].x, allButtons[i].y, allButtons[i].d);
-                noStroke();
-                var distX = mouseX - allButtons[i].x;
-                var distY = mouseY - allButtons[i].y;
-                var distance = sqrt((distX * distX) + (distY * distY));
-                if (distance <= allButtons[i].d / 2) {
-                    fill(230);
-                    ellipse(allButtons[i].x, allButtons[i].y, allButtons[i].d);
+                rectMode(CENTER);
+                strokeCap(ROUND);
+                strokeJoin(ROUND);
+                rect(allButtons[i].rx, allButtons[i].ry, allButtons[i].w, allButtons[i].h);
+                if (mouseX >= allButtons[i].rx - allButtons[i].w / 2 && mouseX <= allButtons[i].rx + allButtons[i].w / 2 && mouseY >= allButtons[i].ry - allButtons[i].h / 2 && mouseY <= allButtons[i].ry + allButtons[i].h / 2) {
+                    push();
+                    fill(55);
+                    rect(allButtons[i].rx, allButtons[i].ry, allButtons[i].w, allButtons[i].h);
+                    pop();
                     if (mouseWentDown(LEFT)) {
                         allButtons[i].callback();
                     }
                 }
-                fill(60);
+                push();
+                fill(230);
+                textSize(allButtons[i].w / 4);
                 textAlign(CENTER, CENTER);
-                textSize(allButtons[i].d / 4);
-                text(allButtons[i].label, allButtons[i].x, allButtons[i].y);
+                noStroke();
+                text(allButtons[i].label, allButtons[i].rx, allButtons[i].ry);
+                pop();
+                // ellipse(allButtons[i].x, allButtons[i].y, allButtons[i].d);
+                // noStroke();
+                // var distX = mouseX - allButtons[i].x;
+                // var distY = mouseY - allButtons[i].y;
+                // var distance = sqrt((distX * distX) + (distY * distY));
+                // if (distance <= allButtons[i].d / 2) {
+                //     push();
+                //     strokeWeight(1);
+                //     stroke(230);
+                //     ellipse(allButtons[i].x, allButtons[i].y, allButtons[i].d + 20, allButtons[i].d + 20);
+                //     pop();
+                //     if (mouseWentDown(LEFT)) {
+                //         allButtons[i].callback();
+                //     }
+                // }
+                // fill(44);
+                // textAlign(CENTER, CENTER);
+                // textSize(allButtons[i].d / 4);
+                // text(allButtons[i].label, allButtons[i].x, allButtons[i].y);
+                // pop();
                 pop();
             }
         }
     }
 }
-p5.prototype.uiButton = function(id) {
+p5.prototype.uiButton = function (id) {
 
 }
 p5.prototype.renderUIGroup = function (uigroup) {
@@ -56,10 +80,11 @@ p5.prototype.uiDisplayStatus = function (status) {
     }
 }
 
-function Button(x, y, d, label, displayStatus, callback) {
-    this.x = x;
-    this.y = y;
-    this.d = d;
+function Button(rx, ry, w, h, label, displayStatus, callback) {
+    this.rx = rx;
+    this.ry = ry;
+    this.w = w;
+    this.h = h;
     this.label = label;
     this.displayStatus = displayStatus || true;
     this.callback = callback || function () {};

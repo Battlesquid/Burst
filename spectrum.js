@@ -20,9 +20,10 @@ function Spectrum() {
     var polateColor = 21;
     var percent = 0;
     var musicPoints = [];
-    var count;
+    var count = 0;
     var me = this;
     var cues;
+    var fft;
 
     // function preload() {
     //     sound = loadSound('assets/loop.mp3');
