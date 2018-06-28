@@ -36,6 +36,7 @@ var songs = {
 };
 var version = "1.0";
 function preload() {
+    soundFormats('mp3', 'ogg');
     sound = loadSound('assets/loop.mp3');
     sound2 = loadSound('assets/loop2.mp3');
     sound3 = loadSound('assets/loop3.mp3');
