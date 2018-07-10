@@ -1,7 +1,7 @@
 var sound, sound2, sound3, sound4, sound5, sound6;
 var font, mgr;
 var soundArr = [];
-var menuloop;
+var menuloop, menuFlag;
 var songs = {
     0: {
         title: "Hollah!",
@@ -32,9 +32,10 @@ var songs = {
         title: "Hollah!",
         artist: "Disfigure",
         difficulty: "Advanced"
-    },
+    }
 };
 var version = "1.0";
+var menu;
 function preload() {
     soundFormats('mp3', 'ogg');
     sound = loadSound('assets/loop.mp3');
@@ -43,7 +44,10 @@ function preload() {
     sound4 = loadSound('assets/loop4.mp3');
     sound5 = loadSound('assets/loop5.mp3');
     sound6 = loadSound('assets/loop6.mp3');
-    menuloop = loadSound('assets/menuloop.mp3');
+    menuloop = loadSound('assets/menuloop.mp3', function() {
+        menuFlag = true;
+    });
+
 
     font = loadFont('assets/TheBoldFont.ttf');
 }
@@ -51,6 +55,17 @@ function preload() {
 function setup() {
     createCanvas(window.innerWidth, window.innerHeight);
     soundArr = soundArr = [sound, sound2, sound3, sound4, sound5, sound6];
+
+    menu = createDiv('');
+    menu.addClass('menu');
+    menu.position(0, 0);
+    for(var i = 0; i < Object.keys(songs).length; i++) {
+        var b = createDiv(songs[i].title);
+        b.addClass('item');
+        b.parent(menu);
+    }
+    menu.hide();
+
     mgr = new SceneManager();
     mgr.sound = sound;
     mgr.sound2 = sound2;
@@ -63,6 +78,7 @@ function setup() {
     mgr.soundArr = soundArr;
     mgr.songs = songs;
     mgr.version = version;
+    mgr.menuFlag = menuFlag;
 
     mgr.wire();
     mgr.showScene(MainMenu);

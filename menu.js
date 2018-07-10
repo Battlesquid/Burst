@@ -2,17 +2,56 @@ var fft, spectrum, flag = 2;
 var h = 0,
     s = 53,
     v = 95;
+var button, button2, button3, div, text, about;
+var back, prev, next;
 
 function MainMenu() {
 
     var me = this;
 
     this.setup = function () {
-        createUIButton(width / 2, height / 2 + 400, 200, 100, "Play", false, hi);
-        createUIButton(width / 2 - 400, height / 2 + 400, 200, 100, "About", false);
-        createUIButton(width / 2 + 400, height / 2 + 400, 200, 100, "Create", false);
+        // createUIButton(width / 2, height / 2 + 400, 200, 100, "Play", false, hi);
+        // createUIButton(width / 2 - 400, height / 2 + 400, 200, 100, "About", false);
+        // createUIButton(width / 2 + 400, height / 2 + 400, 200, 100, "Create", false);
         fft = new p5.FFT();
-        me.sceneManager.menuloop.loop();
+        if (me.sceneManager.menuFlag == true)
+            me.sceneManager.menuloop.play();
+        button = createButton('About');
+        button.position(width / 2 - 400, height / 2 + 400);
+        button2 = createButton('Play');
+        button2.position(width / 2, height / 2 + 400);
+        button3 = createButton('Create');
+        button3.position(width / 2 + 400, height / 2 + 400);
+
+
+        about = createDiv('');
+        about.addClass('isAbout');
+        about.center();
+        txt = createElement('p', 'A ryhthm game made by Battlesquid');
+        txt.parent(about);
+        about.center();
+        about.hide();
+
+        div = createDiv('');
+        button.parent(div);
+        button2.parent(div);
+        button3.parent(div);
+
+
+        button.mouseClicked(function () {
+            about.show();
+        });
+        about.mouseClicked(function () {
+            about.hide();
+        });
+        button2.mouseClicked(function () {
+            button.hide();
+            button2.hide();
+            button3.hide();
+
+            menu.show();
+            me.sceneManager.showScene(SongMenu);
+        });
     }
     this.draw = function () {
         background(40);
@@ -45,24 +84,28 @@ function MainMenu() {
     this.mouseClicked = function () {
         uiDisplayStatus(true);
     }
-
-    function hi() {
-        allButtons[0].displayStatus = false;
-        allButtons[1].displayStatus = false;
-        allButtons[2].displayStatus = false;
-        me.sceneManager.menuloop.stop();
-        me.sceneManager.showScene(SongMenu);
-    }
 }
 
 function SongMenu() {
     var index = 0;
     var me = this;
+
     var names = ["Disfigure - Hollah!", "Disfigure - Hollah!2", "Disfigure - Hollah!3", "Disfigure - Hollah!4", "Disfigure - Hollah!", "Disfigure - Hollah!"];
     this.setup = function () {
-        createUIButton(width / 2 - 600, height / 2, 100, 100, "Prev.", true, decrement);
-        createUIButton(width / 2 + 600, height / 2, 100, 100, "Next", true, increment);
-        createUIButton(width / 2, height / 2, 900, 900, "GO", true, initGame);
+        back = createButton('Back');
+        // prev = createButton('Prev');
+        // next = createButton('Next');
+
+        back.position(5, 5);
+        back.show();
+        // prev.position(width / 2 - 600, height / 2);
+        // next.position(width / 2 + 600, height / 2);
+
+        back.mouseClicked(backToMain);
+        
+        // next.mouseClicked(increment);
+        // prev.mouseClicked(decrement);
+
     }
     this.draw = function () {
         background(44);
@@ -100,6 +143,17 @@ function SongMenu() {
 
     function initGame() {
         me.sceneManager.showScene(Spectrum, index);
+    }
+
+    function backToMain() {
+        me.sceneManager.showScene(MainMenu);
+        back.hide();
+        // prev.hide();
+        // next.hide();
+        menu.hide();
+        button.show();
+        button2.show();
+        button3.show();
     }
 }
 
