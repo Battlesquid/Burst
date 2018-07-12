@@ -2,6 +2,7 @@ var sound, sound2, sound3, sound4, sound5, sound6;
 var font, mgr;
 var soundArr = [];
 var menuloop, menuFlag;
+var back;
 var songs = {
     0: {
         title: "Hollah!",
@@ -29,22 +30,35 @@ var songs = {
         difficulty: "Advanced"
     },
     5: {
-        title: "Hollah!",
-        artist: "Disfigure",
+        title: "Slowing Down",
+        artist: "Garlagan",
         difficulty: "Advanced"
     }
 };
 var version = "1.0";
-var menu;
+var menu, goArr = [];
+
 function preload() {
     soundFormats('mp3', 'ogg');
-    sound = loadSound('assets/loop.mp3');
-    sound2 = loadSound('assets/loop2.mp3');
-    sound3 = loadSound('assets/loop3.mp3');
-    sound4 = loadSound('assets/loop4.mp3');
-    sound5 = loadSound('assets/loop5.mp3');
-    sound6 = loadSound('assets/loop6.mp3');
-    menuloop = loadSound('assets/menuloop.mp3', function() {
+    sound = loadSound('assets/loop.mp3', function () {
+        console.log("Ready")
+    });
+    sound2 = loadSound('assets/loop2.mp3', function () {
+        console.log("Ready")
+    });
+    sound3 = loadSound('assets/loop3.mp3', function () {
+        console.log("Ready")
+    });
+    sound4 = loadSound('assets/loop4.mp3', function () {
+        console.log("Ready")
+    });
+    sound5 = loadSound('assets/loop5.mp3', function () {
+        console.log("Ready")
+    });
+    sound6 = loadSound('assets/loop6.mp3', function () {
+        console.log("Ready")
+    });
+    menuloop = loadSound('assets/menuloop.mp3', function () {
         menuFlag = true;
     });
 
@@ -56,15 +70,7 @@ function setup() {
     createCanvas(window.innerWidth, window.innerHeight);
     soundArr = soundArr = [sound, sound2, sound3, sound4, sound5, sound6];
 
-    menu = createDiv('');
-    menu.addClass('menu');
-    menu.position(0, 0);
-    for(var i = 0; i < Object.keys(songs).length; i++) {
-        var b = createDiv(songs[i].title);
-        b.addClass('item');
-        b.parent(menu);
-    }
-    menu.hide();
+
 
     mgr = new SceneManager();
     mgr.sound = sound;
@@ -81,6 +87,49 @@ function setup() {
     mgr.menuFlag = menuFlag;
 
     mgr.wire();
+
+    menu = createDiv('');
+    menu.addClass('menu');
+    menu.id("menu");
+    menu.center();
+    for (var i = 0; i < Object.keys(songs).length; i++) {
+        console.log("Index:" + i);
+        var b = createDiv(songs[i].title + "-");
+        b.addClass('title');
+        b.addClass(i);
+        var sub = createElement('span', songs[i].artist);
+        sub.addClass('subtitle');
+        sub.parent(b);
+        var go = createButton('Play');
+        go.addClass('go');
+        go.id(i);
+
+        go.parent(b);
+        goArr.push(go);
+        console.log(goArr[i].id());
+
+
+        b.parent(menu);
+    }
+    console.log(goArr.length);
+    // for (var i = 0; i < goArr.length; i++) {
+    //     console.log(i);
+    //     console.log(goArr[i]);
+    //     goArr[i].mouseClicked(function () {
+    //         menu.hide();
+    //         mgr.menuloop.stop();
+
+
+    //         mgr.showScene(Spectrum, parseInt(goArr[i].id()));
+    //     });
+    // }
+    menu.hide();
+    back = createButton('Back');
+    back.position(5, 5);
+    back.hide();
+
+    mgr.goArr = goArr;
+
     mgr.showScene(MainMenu);
 }
 

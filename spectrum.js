@@ -39,12 +39,14 @@ function Spectrum() {
     this.setup = function () {
         soundArr = me.sceneManager.soundArr;
         songIndex = me.sceneArgs;
+        console.log("Song Index:" + songIndex);
+        console.log(soundArr);
         fft = new p5.FFT();
         peakDetect = new p5.PeakDetect();
         amplitude = new p5.Amplitude();
-        amplitude.setInput(soundArr[songIndex]);
-        soundArr[songIndex].amp(0.5);
-        soundArr[songIndex].setVolume(1);
+        // amplitude.setInput(soundArr[songIndex]);
+        // soundArr[songIndex].amp(0.5);
+        // soundArr[songIndex].setVolume(1);
         textFont(this.sceneManager.font);
         textAlign(CENTER);
         h = 0;
@@ -207,6 +209,7 @@ function Spectrum() {
 
     function hit() {
         obHit = true;
+        console.log("hit");
     }
     setInterval(releasePaceObstacle, (60 / 140) * 1000);
     // setInterval(releaseWaveObstacle, (60 / 140 * 4) * 1000)

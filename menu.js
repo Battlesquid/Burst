@@ -2,8 +2,9 @@ var fft, spectrum, flag = 2;
 var h = 0,
     s = 53,
     v = 95;
-var button, button2, button3, div, text, about;
-var back, prev, next;
+var button, button2, button3, div, txt, about;
+var buttons = document.getElementsByClassName("go");
+var buttonsCount = buttons.length;
 
 function MainMenu() {
 
@@ -48,7 +49,7 @@ function MainMenu() {
             button.hide();
             button2.hide();
             button3.hide();
-
+            back.show();
             menu.show();
             me.sceneManager.showScene(SongMenu);
         });
@@ -78,41 +79,35 @@ function MainMenu() {
         pop();
         textSize(30);
         textAlign(CENTER, BOTTOM);
-        text("V " + me.sceneManager.version + " Beta", 150, height);
-        renderUI();
-    }
-    this.mouseClicked = function () {
-        uiDisplayStatus(true);
+        text("v " + me.sceneManager.version + " Beta", 150, height);
     }
 }
 
 function SongMenu() {
     var index = 0;
     var me = this;
-
-    var names = ["Disfigure - Hollah!", "Disfigure - Hollah!2", "Disfigure - Hollah!3", "Disfigure - Hollah!4", "Disfigure - Hollah!", "Disfigure - Hollah!"];
     this.setup = function () {
-        back = createButton('Back');
-        // prev = createButton('Prev');
-        // next = createButton('Next');
-
-        back.position(5, 5);
-        back.show();
-        // prev.position(width / 2 - 600, height / 2);
-        // next.position(width / 2 + 600, height / 2);
-
         back.mouseClicked(backToMain);
-        
-        // next.mouseClicked(increment);
-        // prev.mouseClicked(decrement);
-
     }
     this.draw = function () {
         background(44);
         textFont(this.sceneManager.font);
+        spectrum = fft.analyze();
+        updateAudioVisualizer();
 
-        renderUI();
-        displaySong();
+
+        // for (var i = 0; i < me.sceneManager.goArr.length; i++) {
+        //     goArr[i].mouseClicked(function () {
+        //         me.sceneManager.menuloop.stop();
+        //         menu.hide();
+        //         me.sceneManager.showScene(Spectrum, i);
+        //     });
+        // }
+        $('.go').click(function () {
+            me.sceneManager.menuloop.stop();
+            menu.hide();
+            me.sceneManager.showScene(Spectrum, this.id);
+        });
     }
 
     function displaySong() {

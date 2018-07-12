@@ -4,7 +4,7 @@
     font-weight: bold;
     font-style: normal;
 }
-@import url('https://fonts.googleapis.com/css?family=Roboto:100');
+@import url('https://fonts.googleapis.com/css?family=PT+Sans');
 html,
 body {
     height: 100%;
@@ -47,13 +47,28 @@ body {
     height: 900px;
     overflow-y: auto;
     vertical-align: center;
-    border-top: none;
+    border-right: none;
     border-left: none;
 }
-.item {
+.title {
     display: block;
     padding: 10px;
-    cursor: none;
+    cursor: default;
+}
+.subtitle {
+    font-family: "PT Sans", sans-serif;
+    font-size: 20pt;
+    padding: 20px 0;
+    text-align: right;
+}
+.go {
+    padding: 8px 8px;
+    font-size: 18pt;
+    background-color: rgba(68, 68, 68, 0.623);
+    color:whitesmoke;
+    font-family: 'The Bold Font', sans-serif;
+    border: 1px solid whitesmoke;
+    float: right;
 }
 button {
     font-family: 'The Bold Font', sans-serif;
