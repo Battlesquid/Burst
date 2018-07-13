@@ -2,8 +2,7 @@ function Spectrum() {
 
     var soundArr = [];
     var font, spectrum, h;
-    var flag = 2,
-        changeBGFlag = false;
+    var flag = 2;
     var obHit;
 
     var peakDetect, amplitude, a;
@@ -22,6 +21,7 @@ function Spectrum() {
     var musicPoints = [];
     var count = 0;
     var me = this;
+    var score = 100;
     var fft;
     this.setup = function () {
         soundArr = me.sceneManager.soundArr;
@@ -83,6 +83,7 @@ function Spectrum() {
         displayHUD();
         spectrum = fft.analyze();
         updateAudioVisualizer();
+
         p.position.x = mouseX - width / 2;
         p.position.y = mouseY - height / 2;
 
@@ -96,6 +97,13 @@ function Spectrum() {
         peakDetect.update(fft);
         camera.off();
         updateGameState();
+        push();
+        textAlign(RIGHT, BOTTOM);
+        textSize(40);
+        textFont(me.sceneManager.font);
+        fill(200);
+        text("Score:" + score, width, height);
+        pop();
         camera.on();
         push();
         translate(width / 2, height / 2);
@@ -103,15 +111,9 @@ function Spectrum() {
         rectMode(CENTER);
         rect(0, 0, width, height);
         pop();
-        // if (peakDetect.isDetected) {
-        //     releaseWaveObstacle();
-        // }
-        // if (int(percent) == 3) {
-        //     fadeBgOut();
-        // }
         if (obHit)
             p.shapeColor = color(0, 64, 82);
-        sound.onended(fadeBgOut);
+        sound.onended(showStats);
         if (mouseWentDown(RIGHT)) {
             musicPoints.push(soundArr[songIndex].currentTime());
             console.log(musicPoints);
@@ -213,10 +215,14 @@ function Spectrum() {
         pop();
     }
 
+    function showStats() {
+
+    }
 
     function hit() {
         obHit = true;
         console.log("hit");
+        score--;
     }
     setInterval(releasePaceObstacle, (60 / 140) * 1000);
     // setInterval(releaseWaveObstacle, (60 / 140 * 4) * 1000)
@@ -238,13 +244,6 @@ function Spectrum() {
         pop();
 
 
-        pop();
-    }
-
-    function fadeBgOut() {
-        push();
-        colorMode(RGB);
-        polateColor -= 1 * (polateColor > 0 ? 1 : 0);
         pop();
     }
 
