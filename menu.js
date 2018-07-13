@@ -6,6 +6,12 @@ var button, button2, button3, div, txt, about;
 var buttons = document.getElementsByClassName("go");
 var buttonsCount = buttons.length;
 
+function transition() {
+    $('.transition').fadeIn(1000, function () {
+        $(this).fadeOut(1000);
+    });
+};
+
 function MainMenu() {
 
     var me = this;
@@ -21,7 +27,6 @@ function MainMenu() {
         button3 = createButton('Create');
         button3.position(width / 2 + 400 - button.width / 2, height / 2 + 400);
 
-
         about = createDiv('');
         about.addClass('isAbout');
         about.center();
@@ -35,7 +40,6 @@ function MainMenu() {
         button2.parent(div);
         button3.parent(div);
 
-
         button.mouseClicked(function () {
             about.show();
         });
@@ -43,25 +47,21 @@ function MainMenu() {
             about.hide();
         });
         button2.mouseClicked(function () {
-            button.hide();
-            button2.hide();
-            button3.hide();
-            back.show();
-
-            // $('.menu').animate({
-            //     height: "900px", 
-            //     borderWidth: "3px"
-            // });
-            menu.show();
-            me.sceneManager.showScene(SongMenu);
+            $('.transition').fadeIn(500, function () {
+                button.hide();
+                button2.hide();
+                button3.hide();
+                back.show();
+                menu.show();
+                me.sceneManager.showScene(SongMenu);
+                $(this).fadeOut(500);
+            });
         });
     }
     this.draw = function () {
         background(40);
         colorMode(HSB);
         spectrum = fft.analyze();
-
-
 
         updateAudioVisualizer();
         textFont(this.sceneManager.font);
@@ -71,8 +71,6 @@ function MainMenu() {
             h = 0;
         stroke(h, s, v);
         push();
-
-
 
         strokeWeight(10);
         textAlign(CENTER, CENTER);
@@ -84,6 +82,7 @@ function MainMenu() {
         text("v " + me.sceneManager.version + " Beta", 150, height);
     }
 }
+var id;
 
 function SongMenu() {
     var index = 0;
@@ -99,21 +98,24 @@ function SongMenu() {
         $('.go').click(function () {
             me.sceneManager.menuloop.stop();
             menu.hide();
+            console.log(this.id);
+            $('.transition').fadeIn(500, function (id) {
+                $(this).fadeOut(500);
+            });
             me.sceneManager.showScene(Spectrum, this.id);
         });
     }
 
     function backToMain() {
-        back.hide();
-        // $('.menu').animate({
-        //     height: "0px", 
-        //     borderWidth: "0px"
-        // });
-        menu.hide();
-        button.show();
-        button2.show();
-        button3.show();
-        me.sceneManager.showScene(MainMenu);
+        $('.transition').fadeIn(500, function () {
+            back.hide();
+            menu.hide();
+            button.show();
+            button2.show();
+            button3.show();
+            me.sceneManager.showScene(MainMenu);
+            $(this).fadeOut(500);
+        });
     }
 }
 

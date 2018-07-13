@@ -1,8 +1,12 @@
+document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+}, false);
 var sound, sound2, sound3, sound4, sound5, sound6;
 var font, mgr;
 var soundArr = [];
 var menuloop, menuFlag;
 var back;
+
 var songs = {
     0: {
         title: "Hollah!",
@@ -15,7 +19,7 @@ var songs = {
         difficulty: "Beginner"
     },
     2: {
-        title: "One!",
+        title: "One",
         artist: "HOVERBOOTS",
         difficulty: "Normal"
     },
@@ -36,29 +40,30 @@ var songs = {
     }
 };
 var version = "1.0";
-var menu, goArr = [];
+var menu, goArr = [],
+    transition;
 
 function preload() {
     soundFormats('mp3', 'ogg');
-    sound = loadSound('assets/loop.mp3', function () {
+    sound = loadSound('assets/loop.ogg', function () {
         console.log("Ready")
     });
-    sound2 = loadSound('assets/loop2.mp3', function () {
+    sound2 = loadSound('assets/loop2.ogg', function () {
         console.log("Ready")
     });
-    sound3 = loadSound('assets/loop3.mp3', function () {
+    sound3 = loadSound('assets/loop3.ogg', function () {
         console.log("Ready")
     });
-    sound4 = loadSound('assets/loop4.mp3', function () {
+    sound4 = loadSound('assets/loop4.ogg', function () {
         console.log("Ready")
     });
-    sound5 = loadSound('assets/loop5.mp3', function () {
+    sound5 = loadSound('assets/loop5.ogg', function () {
         console.log("Ready")
     });
-    sound6 = loadSound('assets/loop6.mp3', function () {
+    sound6 = loadSound('assets/loop6.ogg', function () {
         console.log("Ready")
     });
-    menuloop = loadSound('assets/menuloop.mp3', function () {
+    menuloop = loadSound('assets/menuloop.ogg', function () {
         menuFlag = true;
     });
 
@@ -69,8 +74,6 @@ function preload() {
 function setup() {
     createCanvas(window.innerWidth, window.innerHeight);
     soundArr = soundArr = [sound, sound2, sound3, sound4, sound5, sound6];
-
-
 
     mgr = new SceneManager();
     mgr.sound = sound;
@@ -88,6 +91,10 @@ function setup() {
     mgr.songs = songs;
 
     mgr.wire();
+
+    transition = createDiv("");
+    transition.addClass("transition");
+    transition.position(0, 0);
 
     menu = createDiv('');
     menu.addClass('menu');
@@ -124,16 +131,14 @@ function setup() {
     //         mgr.showScene(Spectrum, parseInt(goArr[i].id()));
     //     });
     // }
-    
+
     back = createButton('Back');
     back.position(5, 5);
     back.hide();
     menu.hide();
+
+
     mgr.goArr = goArr;
 
     mgr.showScene(MainMenu);
-}
-
-function addToLoaded() {
-
 }
