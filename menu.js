@@ -96,13 +96,15 @@ function SongMenu() {
         spectrum = fft.analyze();
         updateAudioVisualizer();
         $('.go').click(function () {
-            me.sceneManager.menuloop.stop();
-            menu.hide();
-            console.log(this.id);
-            $('.transition').fadeIn(500, function (id) {
-                $(this).fadeOut(500);
-            });
-            me.sceneManager.showScene(Spectrum, this.id);
+            if (me.sceneManager.cueMap[this.id] != null) {
+                me.sceneManager.menuloop.stop();
+                menu.hide();
+                console.log(this.id);
+                $('.transition').fadeIn(500, function (id) {
+                    $(this).fadeOut(500);
+                });
+                me.sceneManager.showScene(Spectrum, this.id);
+            }
         });
     }
 
