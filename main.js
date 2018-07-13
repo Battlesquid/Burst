@@ -46,7 +46,7 @@ var songs = {
         difficulty: "Advanced"
     }
 };
-var version = "1.0";
+var version = "1.4";
 var menu, goArr = [],
     transition;
 
