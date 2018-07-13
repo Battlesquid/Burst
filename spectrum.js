@@ -25,17 +25,6 @@ function Spectrum() {
     var cues;
     var fft;
 
-    // function preload() {
-    //     sound = loadSound('assets/loop.mp3');
-    //     sound2 = loadSound('assets/loop2.mp3');
-    //     sound3 = loadSound('assets/loop3.mp3');
-    //     sound4 = loadSound('assets/loop4.mp3');
-    //     sound5 = loadSound('assets/loop5.mp3');
-    //     sound6 = loadSound('assets/loop6.mp3');
-
-    //     font = loadFont('assets/TheBoldFont.ttf');
-    // }
-
     this.setup = function () {
         soundArr = me.sceneManager.soundArr;
         songIndex = me.sceneArgs;
@@ -44,9 +33,9 @@ function Spectrum() {
         fft = new p5.FFT();
         peakDetect = new p5.PeakDetect();
         amplitude = new p5.Amplitude();
-        // amplitude.setInput(soundArr[songIndex]);
-        // soundArr[songIndex].amp(0.5);
-        // soundArr[songIndex].setVolume(1);
+        amplitude.setInput(soundArr[songIndex]);
+        soundArr[songIndex].amp(0.5);
+        soundArr[songIndex].setVolume(1);
         textFont(this.sceneManager.font);
         textAlign(CENTER);
         h = 0;
@@ -59,8 +48,30 @@ function Spectrum() {
         if (soundArr[songIndex].isLoaded()) {
             cues = [5.658645833333333, 15.919979166666666, 17.706645833333333, 19.354645833333333, 21.0933125, 22.810645833333332, 24.5493125, 26.26664583333333, 29.7973125, 30.17064583333333, 30.986645833333334, 31.386645833333333, 31.818645833333335, 32.68264583333333, 33.08264583333333, 33.5093125, 34.367979166666665, 34.78397916666667, 35.2373125, 35.690645833333335, 36.09064583333333, 36.538645833333334, 36.97597916666667, 37.80797916666667, 38.239979166666664, 38.65597916666667, 39.535979166666664, 39.9413125, 40.39997916666667, 41.2053125, 41.80264583333334, 43.3973125, 43.8293125, 44.20797916666667, 45.0773125, 45.5093125, 45.946645833333335, 46.82664583333333, 47.24797916666667, 47.69597916666667, 48.12797916666667, 48.52797916666667, 49.01864583333333, 49.418645833333336, 49.839979166666666, 50.266645833333335, 50.69864583333333, 51.135979166666665, 51.546645833333336, 51.99997916666667, 52.3893125, 52.815979166666665, 53.2693125, 53.7173125, 54.10664583333333, 54.50664583333333, 54.95997916666666, 57.9093125, 59.626645833333335, 61.3493125, 63.0773125, 63.5253125, 63.9093125, 64.73064583333333, 66.46397916666666, 68.18664583333333, 69.93597916666667, 70.34664583333333, 70.79464583333333, 71.66397916666666, 72.50664583333334, 73.35997916666666, 74.2133125, 75.05597916666666, 75.93597916666667, 76.76797916666666, 77.27997916666666, 77.73864583333334, 78.57597916666667, 79.37597916666667, 80.2293125, 81.1093125, 81.94664583333333, 82.79997916666666, 83.65864583333334, 84.05864583333333, 87.9413125, 90.93864583333334, 91.37064583333333, 94.36797916666667, 97.80797916666667, 99.53064583333334, 101.19464583333334, 102.92797916666666, 104.6773125, 105.0773125, 105.51464583333333, 105.93064583333333, 106.34664583333333, 106.82664583333333, 107.24797916666667, 107.6693125, 108.07997916666666, 108.52797916666667, 108.77864583333333, 109.0293125, 109.23197916666666, 109.45064583333334, 109.6853125, 109.88797916666667, 110.1173125, 111.99997916666666, 112.36797916666667, 113.2373125, 113.6693125, 114.0373125, 114.95997916666667, 115.33864583333333, 115.78664583333334, 116.6773125, 117.07197916666667, 117.5093125, 118.3573125, 118.7893125, 119.2373125, 120.09064583333334, 120.52797916666667, 120.92797916666666, 121.80797916666667, 122.25597916666666, 122.69864583333333, 123.49864583333333, 125.65864583333334, 126.09597916666667, 126.52797916666667, 126.97597916666666, 127.41864583333333, 127.8453125, 128.26664583333334, 128.52797916666665, 128.92797916666666, 129.1413125, 130.7893125, 139.33864583333335, 139.78664583333332, 141.05597916666667, 141.4773125, 142.8053125, 143.19997916666668, 144.52797916666665, 145.8293125, 146.2453125, 146.69864583333333, 147.56797916666667, 147.97864583333333, 148.44797916666667, 149.2693125, 149.69064583333332, 150.0853125, 150.9173125, 151.3493125, 153.09864583333334];
             for (var i = 0; i < cues.length; i++) {
-                this.sceneManager.soundArr[0].addCue(cues[i], releaseWaveObstacle);
+                this.sceneManager.soundArr[songIndex].addCue(cues[i], releaseWaveObstacle);
             }
+            var blur = createDiv("");
+            blur.addClass("blur");
+            blur.position(0, 0);
+
+            var overlay = createDiv(this.sceneManager.songs[songIndex].title);
+            overlay.addClass("titleOverlay");
+            overlay.center();
+            var br = createElement('br', "");
+            br.parent(overlay);
+            var sub = createElement('span', this.sceneManager.songs[songIndex].artist);
+            sub.addClass('subtitleOverlay');
+            sub.parent(overlay);
+
+            $('.titleOverlay').fadeIn(3000, function () {
+                $(this).fadeOut(3000);
+            });
+            $('.subtitleOverlay').fadeIn(3000, function () {
+                $(this).fadeOut(3000);
+            });
+            $('.blur').fadeIn(3000, function () {
+                $(this).fadeOut(3000);
+            });
             soundArr[songIndex].play();
         }
     }
@@ -72,10 +83,6 @@ function Spectrum() {
         displayHUD();
         spectrum = fft.analyze();
         updateAudioVisualizer();
-        // if (changeBGFlag) {
-        //     p.position.x = lerp(p.position.x, mouseX - width / 2, 0.05);
-        //     p.position.y = lerp(p.position.y, mouseY - height / 2, 0.05);
-        // }
         p.position.x = mouseX - width / 2;
         p.position.y = mouseY - height / 2;
 
@@ -116,7 +123,7 @@ function Spectrum() {
             soundDuration = soundArr[songIndex].duration();
             plength = map(soundArr[songIndex].currentTime(), 0, soundDuration, 0, width);
             percent = map(soundArr[songIndex].currentTime(), 0, soundDuration, 0, 100);
-        } else {}
+        }
     }
 
     function togglePlay() {
@@ -240,9 +247,6 @@ function Spectrum() {
         polateColor -= 1 * (polateColor > 0 ? 1 : 0);
         pop();
     }
-    // var pallette = {
-    //     pace: new p5.Color()
-    // }
 
     function releasePaceObstacle() {
         var s = createSprite(0, 0, 10, 10);

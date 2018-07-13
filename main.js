@@ -85,6 +85,7 @@ function setup() {
     mgr.songs = songs;
     mgr.version = version;
     mgr.menuFlag = menuFlag;
+    mgr.songs = songs;
 
     mgr.wire();
 
@@ -123,11 +124,11 @@ function setup() {
     //         mgr.showScene(Spectrum, parseInt(goArr[i].id()));
     //     });
     // }
-    menu.hide();
+    
     back = createButton('Back');
     back.position(5, 5);
     back.hide();
-
+    menu.hide();
     mgr.goArr = goArr;
 
     mgr.showScene(MainMenu);

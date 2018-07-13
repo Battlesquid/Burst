@@ -11,18 +11,15 @@ function MainMenu() {
     var me = this;
 
     this.setup = function () {
-        // createUIButton(width / 2, height / 2 + 400, 200, 100, "Play", false, hi);
-        // createUIButton(width / 2 - 400, height / 2 + 400, 200, 100, "About", false);
-        // createUIButton(width / 2 + 400, height / 2 + 400, 200, 100, "Create", false);
         fft = new p5.FFT();
         if (me.sceneManager.menuFlag == true)
-            me.sceneManager.menuloop.play();
+            me.sceneManager.menuloop.loop();
         button = createButton('About');
-        button.position(width / 2 - 400, height / 2 + 400);
+        button.position(width / 2 - 400 - button.width / 2, height / 2 + 400);
         button2 = createButton('Play');
-        button2.position(width / 2, height / 2 + 400);
+        button2.position(width / 2 - button.width / 2, height / 2 + 400);
         button3 = createButton('Create');
-        button3.position(width / 2 + 400, height / 2 + 400);
+        button3.position(width / 2 + 400 - button.width / 2, height / 2 + 400);
 
 
         about = createDiv('');
@@ -50,6 +47,11 @@ function MainMenu() {
             button2.hide();
             button3.hide();
             back.show();
+
+            // $('.menu').animate({
+            //     height: "900px", 
+            //     borderWidth: "3px"
+            // });
             menu.show();
             me.sceneManager.showScene(SongMenu);
         });
@@ -94,15 +96,6 @@ function SongMenu() {
         textFont(this.sceneManager.font);
         spectrum = fft.analyze();
         updateAudioVisualizer();
-
-
-        // for (var i = 0; i < me.sceneManager.goArr.length; i++) {
-        //     goArr[i].mouseClicked(function () {
-        //         me.sceneManager.menuloop.stop();
-        //         menu.hide();
-        //         me.sceneManager.showScene(Spectrum, i);
-        //     });
-        // }
         $('.go').click(function () {
             me.sceneManager.menuloop.stop();
             menu.hide();
@@ -110,45 +103,17 @@ function SongMenu() {
         });
     }
 
-    function displaySong() {
-        push();
-        noFill();
-        stroke(230);
-        ellipse(width / 2, height / 2, 900, 900);
-        pop();
-        push();
-        textSize(30);
-        textAlign(CENTER, CENTER);
-        text(me.sceneManager.songs[index].title, width / 2, height / 2 - 250);
-        pop();
-
-    }
-
-    function increment() {
-        if (index < me.sceneManager.soundArr.length) {
-            index++;
-        }
-    }
-
-    function decrement() {
-        if (index > 0) {
-            index--
-        }
-    }
-
-    function initGame() {
-        me.sceneManager.showScene(Spectrum, index);
-    }
-
     function backToMain() {
-        me.sceneManager.showScene(MainMenu);
         back.hide();
-        // prev.hide();
-        // next.hide();
+        // $('.menu').animate({
+        //     height: "0px", 
+        //     borderWidth: "0px"
+        // });
         menu.hide();
         button.show();
         button2.show();
         button3.show();
+        me.sceneManager.showScene(MainMenu);
     }
 }
 
